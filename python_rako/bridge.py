@@ -57,6 +57,18 @@ class _BridgeCommander:
         """Set the brightness of a channel."""
         raise NotImplementedError()
 
+    async def operate_room_blinds(
+        self, room_id: int, command: int
+    ) -> None:
+        """Operate the blinds of a room."""
+        await self.operate_channel_blinds(room_id, 0, command)
+
+    async def operate_channel_blinds(
+        self, room_id: int, channel_id: int, command: int
+    ) -> None:
+        """Operate the blinds of a channel."""
+        raise NotImplementedError()
+
 
 class BridgeCommanderUDP(_BridgeCommander):
     async def set_room_scene(self, room_id: int, scene: int) -> None:
@@ -78,6 +90,18 @@ class BridgeCommanderUDP(_BridgeCommander):
             channel=channel_id,
             command=CommandType.SET_LEVEL,
             data=[Flags.USE_DEFAULT_FADE_RATE.value, brightness],
+        )
+        await self._send_command(command)
+
+    async def operate_channel_blinds(
+        self, room_id: int, channel_id: int, command: int
+    ) -> None:
+        """Operate the blinds of a channel."""
+        command = CommandUDP(
+            room=room_id,
+            channel=channel_id,
+            command=command,
+            data=[],
         )
         await self._send_command(command)
 
@@ -119,6 +143,17 @@ class BridgeCommanderHTTP(_BridgeCommander):
             room=room_id,
             channel=channel_id,
             level=brightness,
+        )
+        await self._send_command(command)
+
+    async def operate_channel_blinds(
+        self, room_id: int, channel_id: int, command: int
+    ) -> None:
+        """Operate the blinds of a channel."""
+        command = CommandMiscHTTP(
+            room=room_id,
+            channel=channel_id,
+            command=command,
         )
         await self._send_command(command)
 

@@ -33,6 +33,29 @@ class ChannelLight(Light):
     channel_levels: str
 
 
+@dataclass
+class Blinds:
+    room_id: int
+    room_title: int
+    channel_id: int
+
+    @property
+    def room_channel(self) -> RoomChannel:
+        return RoomChannel(self.room_id, self.channel_id)
+
+
+@dataclass
+class RoomBlinds(Blinds):
+    channel_id: int = 0
+
+
+@dataclass
+class ChannelBlinds(Blinds):
+    channel_type: str
+    channel_name: str
+    channel_levels: str
+
+
 @dataclass(frozen=True)
 class BridgeInfo:
     version: str
@@ -122,6 +145,18 @@ class CommandHTTP:
 
     def as_params(self) -> Dict[str, int]:
         raise NotImplementedError()
+
+
+@dataclass
+class CommandMiscHTTP(CommandHTTP):
+    command: int
+
+    def as_params(self) -> Dict[str, int]:
+        return {
+            "room": self.room,
+            "ch": self.channel,
+            "com": self.command,
+        }
 
 
 @dataclass

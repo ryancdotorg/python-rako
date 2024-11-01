@@ -35,6 +35,9 @@ class CommandType(Enum):
     SC2_LEGACY = 4
     SC3_LEGACY = 5
     SC4_LEGACY = 6
+    BLINDS_STOP = 3
+    BLINDS_RAISE = 4
+    BLINDS_LOWER = 6
     # IDENT = 8  # unsupported
     LEVEL_SET_LEGACY = 12
     # STORE = 13  # unsupported
